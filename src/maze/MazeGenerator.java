@@ -3,11 +3,10 @@ package maze;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
-import java.io.File;
-import java.io.IOException;
-
+import java.io.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.*;
 
 public class MazeGenerator {
 	
@@ -160,21 +159,32 @@ public static void buildGUI() {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
 				
-				//JOptionPane.showMessageDialog(frame1, "Sorry, this feature is not yet available...");
+				JFileChooser jfc = new JFileChooser();
+				jfc.setFileFilter(new FileNameExtensionFilter("*.jpg, *.png", "jpg", "png"));
+				
+				jfc.setDialogTitle("Save maze as image");
+				int saveResult = jfc.showSaveDialog(button2);
 				
 				BufferedImage componentImage = new BufferedImage(drawPanel2.getWidth(), drawPanel2.getHeight(), BufferedImage.TYPE_INT_RGB);
 				Graphics2D g2d = componentImage.createGraphics();
 				drawPanel2.paint(g2d);
+				File imageFile = jfc.getSelectedFile();
+				File imageFileJPG = new File(imageFile.toString()+".jpg");
+				
+				try 
+				{
+					if (saveResult == JFileChooser.APPROVE_OPTION) 
+					{
+						ImageIO.write(componentImage, "jpg", imageFileJPG);
+					}
 					
-				File outputfile = new File("image.jpg");
-				try {
-					ImageIO.write(componentImage, "jpg", outputfile);
-				} catch (IOException e) {
-					
-					System.out.println("I/O Error encountered when saving image");
+				}
+				catch (IOException ioe) 
+				{
+					JOptionPane.showMessageDialog(jfc, "I/O Error!");
 				}
 				
-					}
+					}//AE
 				}
 			);//button2 event handler (Save)
 	
